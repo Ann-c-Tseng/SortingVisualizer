@@ -1,95 +1,152 @@
-
-var container = document.getElementById("array");
-
-// Generating the array of blocks
-function generatearray() {
-  for(var i = 0; i < 20; i++) {
-    //Get a value between 1 and 100 (1 & 100 inclusive)
-    var value = Math.ceil(Math.random() * 100);
-
-    //Make an array element div
-    var array_ele = document.createElement("div");
-
-    //Adding the class 'block' to div
-    array_ele.classList.add("block");
-
-    //Adding height + transform style to div
-    array_ele.style.height = `${value * 3}px`;
-    array_ele.style.transform = `translate(${i*30}px)`;
-
-    //Create label element for displaying a block's size
-    var array_ele_label = document.createElement("label");
-    array_ele_label.classList.add("block_id");
-    array_ele_label.innerText = value;
-
-    //Add the created elements to our html file.
-    array_ele.appendChild(array_ele_label);
-    container.appendChild(array_ele);
-  }
+// Canvas variables
+var canvas, canvaswidth, canvasheight, ctrl;
+ 
+// Call canvasElements() to store height/width
+// in above canvas variables
+canvasElements();
+ 
+// Below are 3 arrays:
+//1) arr is for storing array element
+//2) intermediate for storing intermediate values
+//3) visited is for element which has been sorted
+var arr = [], intermediate = [], visited = [];
+ 
+ 
+// Length of given unsorted array
+var arr_length = 20;
+ 
+// Store random value between 1 and 100 (ends inclusive) in arr[]
+for (var i = 0; i < arr_length; i++) {
+    arr.push(Math.ceil(Math.random() * 100));
+}
+ 
+// Initialize itmd and visited array with 0
+for (var i = 0; i < arr_length; i++) {
+    intermediate.push(0);
+    visited.push(0);
 }
 
-// Function to generate indexes
-var count_container = document.getElementById("count");
-function generate_idx() {
-  for (var i = 0; i < 20; i++) {
-    //Make an array element div again
-    var array_ele2 = document.createElement("div");
+// Merging of two sub array
+function mergeArray(start, end) {
+    let mid = parseInt((start + end) >> 1);
+    let start1 = start, start2 = mid + 1;
+    let end1 = mid, end2 = end;
+     
+    // Initial index of merged subarray
+    let index = start;
+ 
+    //Exit while loop if one or both of the arrays become empty
+    while (start1 <= end1 && start2 <= end2) {
+        if (arr[start1] <= arr[start2]) {
+            intermediate[index] = arr[start1];
+            index = index + 1;
+            start1 = start1 + 1;
+        }
+        else if(arr[start1] > arr[start2]) {
+            intermediate[index] = arr[start2];
+            index = index + 1;
+            start2 = start2 + 1;
+        }
+    }
+ 
+    // Copy the remaining elements of
+    // arr[], if there are any
+    while (start1 <= end1) {
+        intermediate[index] = arr[start1];
+        index = index + 1;
+        start1 = start1 + 1;
+    }
+ 
+    while (start2 <= end2) {
+        intermediate[index] = arr[start2];
+        index = index + 1;
+        start2 = start2 + 1;
+    }
+ 
+    index = start
+    while (index <= end) {
+        arr[index] = intermediate[index];
+        index++;
+    }
+}
+ 
+// Function for showing visualization
+// effect
+function drawBars(start, end) {
+ 
+    // Clear previous unsorted bars
+    ctrl.clearRect(0, 0, 1000, 1500);
+ 
+    // Styling of bars
+    for (let i = 0; i < arr_length; i++) {
+ 
+        // Changing styles of bars
+        ctrl.fillStyle = "#6b5b95";   
+         
+        // Size of rectangle of bars
+        ctrl.fillRect(30 * i, 0, 28, arr[i]*3);
 
-    //Adding the class 'block2' to div
-    array_ele2.classList.add("block2");
-
-    //Adding height + transform style to div
-    array_ele2.style.height = `${20}px`;
-    array_ele2.style.transform = `translate(${i * 30}px)`;
-
-    //Adding indexes
-    var array_ele_label2 = document.createElement("label");
-    array_ele_label2.classList.add("block_id3");
-    array_ele_label2.innerText = i;
-
-    //Appending create elements to index.html
-    array_ele2.appendChild(array_ele_label2);
-    count_container.appendChild(array_ele2);
-    
-  }
+        
+        if (visited[i]) {
+            ctrl.fillStyle = "green";
+            ctrl.fillRect(30 * i, 0, 28, arr[i]*3);
+        }
+    }
+ 
+    for (let i = start; i <= end; i++) {
+        ctrl.fillStyle = "yellow";
+        ctrl.fillRect(30 * i, 0, 28, arr[i]*3);
+        visited[i] = 1
+    }
+}
+ 
+//Wait time
+function timeout(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+ 
+ 
+// Merge Sorting
+const mergeSort = async (start, end) => {
+    if (start < end) {
+        let mid = parseInt((start + end) >> 1);
+        await mergeSort(start, mid);
+        await mergeSort(mid + 1, end);
+        await mergeArray(start, end);
+        await drawBars(start, end);
+ 
+        // Waiting time is 800ms
+        await timeout(800);
+    }
+}
+ 
+// canvasElements function for storing
+// width and height in canvas variable
+function canvasElements() {
+    canvas = document.getElementById("Canvas");
+    canvas.width = canvas.height = 1000;
+    canvaswidth = canvas.width;
+    canvasheight = canvas.height;
+    ctrl = canvas.getContext("2d");
 }
 
-function merge(left, right) {
-  let arr = []
-  // Leave loop if any one of the array gets empty
-  while (left.length && right.length) {
-      var leftV = Number(left[0].childNodes[0].innerText);
-      var rightV = Number(right[0].childNodes[0].innerText);
+function returnToPurple() {
+    // Waiting time is 800ms
+    timeout(800);
 
-      // Pick the smaller among the smallest element of left and right sub arrays 
-      if (leftV < rightV) {
-          arr.push(left.shift());
-      } else {
-          arr.push(right.shift());
-      }
-  }
-  // Concatenating the leftover elements
-  // (in case we didn't go through the entire left or right array)
-  var concatinated = [ ...arr, ...left, ...right ];
-  return concatinated;
+    for (let i = 0; i < arr_length; i++) {
+        // Changing styles of bars
+        ctrl.fillStyle = "#6b5b95";
+        // Size of rectangle of bars
+        ctrl.fillRect(30 * i, 0, 28, arr[i]*3);
+    }
+}
+ 
+// Async Merge Sort function
+const start = async () => {
+    await mergeSort(0, arr_length - 1);
+    await drawBars();
+    await returnToPurple();
 }
 
-function MergeSort(array) {
-  const half = array.length / 2
-  
-  // Base case or terminating case
-  if(array.length < 2){
-    return array;
-  }
-  
-  const left = array.splice(0, half)
-  return merge(MergeSort(left), MergeSort(array))
-}
-
-// Call to generate the array
-generatearray();
-
-// Call to generate the indexes
-generate_idx();
-
-var result = MergeSort(Array.from(document.querySelectorAll(".block")));
+start();
