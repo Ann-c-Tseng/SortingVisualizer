@@ -1,7 +1,7 @@
 var container = document.getElementById("array");
 
 // Generating the array of blocks
-function generatearray() {
+function generateArray() {
   for(var i = 0; i < 20; i++) {
     //Get a value between 1 and 100 (1 & 100 inclusive)
     var value = Math.ceil(Math.random() * 100);
@@ -29,7 +29,7 @@ function generatearray() {
 
 // Function to generate indexes
 var count_container = document.getElementById("count");
-function generate_idx() {
+function generateIdx() {
   for (var i = 0; i < 20; i++) {
     //Make an array element div again
     var array_ele2 = document.createElement("div");
@@ -118,22 +118,22 @@ async function partition(l, r, delay = 700) {
 
 
 //Async Quick Sort function
-async function QuickSort(l, r, delay = 100) {
+async function quickSort(l, r, delay = 100) {
   if (l < r) {
     //Storing the index of pivot element after we partition
     var pivot_index = await partition(l, r);
     //Recursively call QS for left partition
-    await QuickSort(l, pivot_index-1);
+    await quickSort(l, pivot_index-1);
     //Recursively call QS for right partition
-    await QuickSort(pivot_index + 1, r);
+    await quickSort(pivot_index + 1, r);
   }
 }
 
 // Call to generate the array
-generatearray();
+generateArray();
 
 // Call to generate the indexes
-generate_idx();
+generateIdx();
 
 // Call to Quick Sort
-QuickSort(0, 19);
+quickSort(0, 19);
