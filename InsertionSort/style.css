@@ -10,11 +10,30 @@
     text-align: center;
 }
 
-#array {
-    background-color: white;
-    height: 278px;
-    width: 598px;
-    margin: auto;
+.data-container {
+    width: 600px;
+    height: 364px;
     position: relative;
-    margin-top: 64px;
+    margin: 0 auto;
+}
+
+.bar {
+    width: 28px;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    background-color: #6b5c95;
+    transition: 0.2s all ease;
+}
+
+.bar__id {
+    position: absolute;
+    top: -24px;
+    width: 100%;
+    text-align: center;
+}
+
+#ele{
+    text-align: center;
+    height: 35px;
 }
