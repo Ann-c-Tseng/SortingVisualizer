@@ -29,4 +29,20 @@ function generateArray() {
     }
 }
 
-generateArray();
+//Function to swap two bars
+function swap(bar1, bar2) {
+    return new Promise((resulve) => {
+        //Exchange the transform style of the two bars
+        var temp = bar1.style.transform;
+        bar1.style.transform = bar2.style.transform;
+        bar2.style.transform = temp;
+
+        window.requestAnimationFrame(function() {
+            //Wait for .25 seconds
+            setTimeout(()=> {
+                container.insertBefore(bar2, bar1);
+                resolve();
+            }, 250);
+        });
+    });
+}
