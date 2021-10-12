@@ -1,7 +1,7 @@
 var container = document.getElementById("array");
   
 // Function to generate the array of blocks
-function generateArray() {
+function generatearray() {
     for (var i = 0; i < 20; i++) {
   
         // Return a value from 1 to 100 (both inclusive)
@@ -28,21 +28,72 @@ function generateArray() {
         container.appendChild(array_ele);
     }
 }
-
-//Function to swap two bars
-function swap(bar1, bar2) {
-    return new Promise((resulve) => {
-        //Exchange the transform style of the two bars
-        var temp = bar1.style.transform;
-        bar1.style.transform = bar2.style.transform;
-        bar2.style.transform = temp;
-
+  
+// Promise to swap two blocks
+function swap(el1, el2) {
+    return new Promise((resolve) => {
+  
+        // For exchanging styles of two blocks
+        var temp = el1.style.transform;
+        el1.style.transform = el2.style.transform;
+        el2.style.transform = temp;
+  
         window.requestAnimationFrame(function() {
-            //Wait for .25 seconds
-            setTimeout(()=> {
-                container.insertBefore(bar2, bar1);
+  
+            // For waiting for .25 sec
+            setTimeout(() => {
+                container.insertBefore(el2, el1);
                 resolve();
             }, 250);
         });
     });
 }
+  
+// Asynchronous BubbleSort function
+async function BubbleSort(delay = 100) {
+    var blocks = document.querySelectorAll(".block");
+  
+    // BubbleSort Algorithm
+    for (var i = 0; i < blocks.length; i += 1) {
+        for (var j = 0; j < blocks.length - i - 1; j += 1) {
+  
+            // To change background-color of the
+            // blocks to be compared
+            blocks[j].style.backgroundColor = "#FF4949";
+            blocks[j + 1].style.backgroundColor = "#FF4949";
+  
+            // To wait for .1 sec
+            await new Promise((resolve) =>
+                setTimeout(() => {
+                    resolve();
+                }, delay)
+            );
+  
+            console.log("run");
+            var value1 = Number(blocks[j].childNodes[0].innerHTML);
+            var value2 = Number(blocks[j + 1]
+                        .childNodes[0].innerHTML);
+  
+            // To compare value of two blocks
+            if (value1 > value2) {
+                await swap(blocks[j], blocks[j + 1]);
+                blocks = document.querySelectorAll(".block");
+            }
+  
+            // Changing the color to the previous one
+            blocks[j].style.backgroundColor = "#6b5b95";
+            blocks[j + 1].style.backgroundColor = "#6b5b95";
+        }
+  
+        //changing the color of greatest element 
+        //found in the above traversal
+        blocks[blocks.length - i - 1]
+                .style.backgroundColor = "#13CE66";
+    }
+}
+  
+// Calling generatearray function
+generatearray();
+  
+// Calling BubbleSort function
+BubbleSort();
